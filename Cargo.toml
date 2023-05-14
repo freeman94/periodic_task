@@ -1,0 +1,10 @@
+[package]
+name = "periodic_task"
+description = "Synchronous long lived periodic tasks"
+version = "0.1.0"
+authors = ["Jacob H. Freeman <jhfreeman@utexas.edu>"]
+edition = "2021"
+
+[lib]
+name = "periodic_task"
+path = "src/lib.rs"
