@@ -30,8 +30,8 @@ impl Builder {
         self
     }
 
-    /// Repeatedly execute `f`, with a period of `p` until canceled.
-    pub fn spawn<F>(self, p: Duration, f: F) -> Result<TaskJoinHandle>
+    /// Repeatedly execute `f`, with an optional period of `p` until cancelled.
+    pub fn spawn<F>(self, f: F, p: Option<Duration>) -> Result<TaskJoinHandle>
     where
         F: Fn() -> () + Send + Sync + 'static,
     {
@@ -40,7 +40,10 @@ impl Builder {
         let thread_handle = std::thread::spawn(move || {
             while !is_cancelled.load(std::sync::atomic::Ordering::Relaxed) {
                 f();
-                park_timeout(p);
+                match p {
+                    Some(t) => park_timeout(t),
+                    None => continue,
+                }
             }
         });
 
